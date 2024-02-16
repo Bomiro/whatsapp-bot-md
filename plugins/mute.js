@@ -3,7 +3,7 @@ const {
 	isAdmin,
 	setMute,
 	addTask,
-	genButtonMessage,
+	// genButtonMessage,
 	c24to12,
 	getMute,
 } = require('../lib')
@@ -36,37 +36,37 @@ bot(
 			const isMute = await setMute(message.jid, 'mute', hour == 'on')
 			if (!isMute) return await message.send('_Not Found AutoMute')
 			const task = await getMute(message.jid, 'mute')
-			if (!task || !task.hour)
-				return await message.send('_Not Found AutoMute_')
+			if (!task || !task.hour) return await message.send('_Not Found AutoMute_')
 			const isTask = addTask(
 				message.jid,
 				'mute',
 				hour == 'off' ? 'off' : task.hour,
 				task.minute,
-				message.client,
 				task.msg
 			)
-			if (!isTask)
-				return await message.send('_AutoMute Already Disabled_')
+			if (!isTask) return await message.send('_AutoMute Already Disabled_')
 			return await message.send(
 				`_AutoMute ${hour == 'on' ? 'Enabled' : 'Disabled'}._`
 			)
 		}
 		if (!hour || !min || isNaN(hour) || isNaN(min))
 			return await message.send(
-				await genButtonMessage(
-					[
-						{ id: 'amute on', text: 'ON' },
-						{ id: 'amute off', text: 'OFF' },
-						{ id: 'amute info', text: 'INFO' },
-					],
-					'*Example : amute 6 0*\namute info\namute on/off\nReply to a text to set Msg'
-				),
-				{},
-				'button'
+				'*Example : amute 6 0*\namute on | off\namute list\nReply to a text to send Msg on mute'
 			)
+		// return await message.send(
+		// 	await genButtonMessage(
+		// 		[
+		// 			{ id: 'amute on', text: 'ON' },
+		// 			{ id: 'amute off', text: 'OFF' },
+		// 			{ id: 'amute info', text: 'INFO' },
+		// 		],
+		// 		'*Example : amute 6 0*\namute info\namute on/off\nReply to a text to set Msg'
+		// 	),
+		// 	{},
+		// 	'button'
+		// )
 		await setMute(message.jid, 'mute', true, hour, min, msg)
-		addTask(message.jid, 'mute', hour, min, message.client, msg)
+		addTask(message.jid, 'mute', hour, min, msg)
 
 		return await message.send(
 			`_Group will Mute at ${c24to12(`${hour}:${min}`)}_${
@@ -111,30 +111,31 @@ bot(
 				'unmute',
 				hour == 'off' ? 'off' : task.hour,
 				task.minute,
-				message.client,
 				task.msg
 			)
-			if (!isTask)
-				return await message.send('_AutoUnMute Already Disabled_')
+			if (!isTask) return await message.send('_AutoUnMute Already Disabled_')
 			return await message.send(
 				`_AutoUnMute ${hour == 'on' ? 'Enabled' : 'Disabled'}._`
 			)
 		}
 		if (!hour || !min || isNaN(hour) || isNaN(min))
 			return await message.send(
-				await genButtonMessage(
-					[
-						{ id: 'aunmute on', text: 'ON' },
-						{ id: 'aunmute off', text: 'OFF' },
-						{ id: 'aunmute info', text: 'INFO' },
-					],
-					'*Example : aunmute 6 0*\naunmute info\naunmute on/off\nReply to a text to set Msg'
-				),
-				{},
-				'button'
+				'*Example : aunmute 16 30*\naunmute on | off\naunmute list\nReply to a text to send Msg on unmute'
 			)
+		// return await message.send(
+		// 	await genButtonMessage(
+		// 		[
+		// 			{ id: 'aunmute on', text: 'ON' },
+		// 			{ id: 'aunmute off', text: 'OFF' },
+		// 			{ id: 'aunmute info', text: 'INFO' },
+		// 		],
+		// 		'*Example : aunmute 6 0*\naunmute info\naunmute on/off\nReply to a text to set Msg'
+		// 	),
+		// 	{},
+		// 	'button'
+		// )
 		await setMute(message.jid, 'unmute', true, hour, min, msg)
-		addTask(message.jid, 'unmute', hour, min, message.client, msg)
+		addTask(message.jid, 'unmute', hour, min, msg)
 		return await message.send(
 			`_Group will unMute at ${c24to12(`${hour}:${min}`)}_${
 				msg != 'null' ? `\n_Message: ${msg}_` : ''
